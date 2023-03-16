@@ -11,22 +11,34 @@ bd = mysql.connector.connect(
 
 cursor = bd.cursor()
 
+# class Stock:
+#     def __init__(self):
+#         pass
+
+#     def delete_prod(self):
+#         pass
+#         # test.delete(0, END)
+
 root = tk.Tk()
 
 root.title("Gestion de stock")
 root.geometry('650x400')
 
+# Frame BDD
 frame = tk.Frame(root)
 frame.pack()
 
 bd_info = tk.LabelFrame(frame, text="Base de données", font=('Arial', 10, 'bold'))
-bd_info.pack(pady=100)
+bd_info.pack(pady=30)
 
 # Texte dans la frame BDD
 # bd_info2 = tk.Label(bd_info, text="Titre")
 # bd_info2.pack()
 
+# Frame Produits
+
 bd_info3 = tk.LabelFrame(bd_info, text="Produits", fg='green', font=('Arial', 10, 'bold'))
+bd_info3.pack()
 
 # Infos produits: ID, Nom, description, prix, quantité, categorie
 bd_info2 = tk.Label(bd_info3, text="ID", fg='green')
@@ -44,10 +56,10 @@ bd_info7.grid(row=3, column=3)
 bd_info8 = tk.Label(bd_info3, text="Quantité", fg='green')
 bd_info8.grid(row=3, column=4)
 
-bd_info9 = tk.Label(bd_info3, text="Catégorie", fg='green')
+bd_info9 = tk.Label(bd_info3, text="ID Catégorie", fg='green')
 bd_info9.grid(row=3, column=5)
 
-bd_info3.pack()
+# Affiche produits en tableau
 cursor.execute("SELECT * FROM produit limit 0,10")
 i=0 
 for produit in cursor:
@@ -55,10 +67,13 @@ for produit in cursor:
         produit_entry = Entry(bd_info3, width=15, fg='black', justify=CENTER, background="white") 
         produit_entry.grid(row=i, column=j)
         produit_entry.insert(END, produit[j]) # Ecrit le nom du produit dans l'entry
-    i=i+1
+    i += 1
 
-bd_info4 = tk.LabelFrame(bd_info, text="Catégories", font=('Arial', 10, 'bold'))
+# Catégories
+bd_info4 = tk.LabelFrame(bd_info, text="Catégories", fg='blue', font=('Arial', 10, 'bold'))
 bd_info4.pack()
+
+# Affiche catégories en tableau
 cursor.execute("SELECT * FROM categorie limit 0,10")
 i=0 
 for categorie in cursor:
@@ -66,7 +81,45 @@ for categorie in cursor:
         categorie_entry = Entry(bd_info4, width=18, fg='black', justify=CENTER) 
         categorie_entry.grid(row=i, column=j)
         categorie_entry.insert(END, categorie[j])
-    i=i+1
+    i += 1
+
+# Actions
+buttons = tk.Frame(root)
+buttons.pack()
+
+actions = tk.LabelFrame(buttons, text="Actions", font=('Arial', 10, 'bold'))
+actions.pack()
+
+# Entry Actions
+add = Entry(actions, justify=CENTER, border=4)
+add.grid(row=0, column=0)
+
+delete = Entry(actions, justify=CENTER, border=4)
+delete.grid(row=0, column=1)
+
+modif = Entry(actions, justify=CENTER, border=4)
+modif.grid(row=0, column=2)
+
+# Boutons et fonctions de la frame Actions
+def func_add_product():
+    print(add.get())
+    add.delete(0, END)
+
+def func_delete_product():
+    delete.delete(0, END)
+
+def func_modif_product():
+    pass
+    # Get l'entry, get l'ID dans le tableau Produit, et modifier le produit par l'entry.
+
+add_product = Button(actions, text='Ajouter un produit', padx=10, pady=10, command=func_add_product)
+add_product.grid(row=1, column=0, padx=10, pady=10)
+
+delete_product = Button(actions, text='Supprimer un produit', padx=10, pady=10, command=func_delete_product)
+delete_product.grid(row=1, column=1, padx=10, pady=10)
+
+modif_product = Button(actions, text='Modifier un produit', padx=10, pady=10, command=func_modif_product)
+modif_product.grid(row=1, column=2, padx=10, pady=10)
 
 root.mainloop()
 
