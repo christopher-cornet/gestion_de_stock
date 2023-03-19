@@ -13,11 +13,26 @@ cursor = bd.cursor()
 
 root = tk.Tk()
 
+# Centrer la fenêtre
+appwidth = 650
+appheight = 460
+screenwidth = root.winfo_screenwidth()
+screenheight = root.winfo_screenheight()
+x = (screenwidth / 2) - (appwidth / 2)
+y = (screenheight / 2) - (appheight / 2)
+
 root.title("Gestion de stock")
-root.geometry('650x430')
+root.geometry(f'{appwidth}x{appheight}+{int(x)}+{int(y)}')
 
 def show_products():
-    window = Toplevel(height=400, width=650)
+    appwidth = 750
+    appheight = 300
+    screenwidth = root.winfo_screenwidth()
+    screenheight = root.winfo_screenheight()
+    x = (screenwidth / 2) - (appwidth / 2)
+    y = (screenheight / 2) - (appheight / 2)
+    window = Toplevel()
+    window.geometry(f'{appwidth}x{appheight}+{int(x)}+{int(y)}')
 
     # Frame BDD
     frame = tk.Frame(root)
@@ -87,6 +102,7 @@ show_product.pack(pady=10)
 actions = tk.LabelFrame(root, text='Actions', font=('Arial', 10, 'bold'))
 actions.pack()
 
+# Clique sur les entry colonne1 (ajout produit)
 def click_name(event):
     name_entry.config(state=NORMAL)
     name_entry.delete(0, END)
@@ -115,33 +131,58 @@ def click_modif(event):
     modif.config(state=NORMAL)
     modif.delete(0, END)
 
+# Clique sur les entry colonne3 (modif produit)
+def click_name2(event):
+    name_entry2.config(state=NORMAL)
+    name_entry2.delete(0, END)
+
+def click_desc2(event):
+    desc_entry2.config(state=NORMAL)
+    desc_entry2.delete(0, END)
+
+def click_prix2(event):
+    price_entry2.config(state=NORMAL)
+    price_entry2.delete(0, END)
+
+def click_quantite2(event):
+    quantity_entry2.config(state=NORMAL)
+    quantity_entry2.delete(0, END)
+
+def click_id_category2(event):
+    id_category_entry2.config(state=NORMAL)
+    id_category_entry2.delete(0, END)
+
+def click_modif2(event):
+    modif.config(state=NORMAL)
+    modif.delete(0, END)
+
 # Entry Actions
 name_entry = Entry(actions, justify=CENTER, border=4)
-name_entry.insert(0, 'Nom')
+name_entry.insert(0, 'Nom*')
 name_entry.config(state=DISABLED)
 name_entry.bind("<Button-1>", click_name)
 name_entry.grid(row=0, column=0)
 
 desc_entry = Entry(actions, justify=CENTER, border=4)
-desc_entry.insert(0, 'Description')
+desc_entry.insert(0, 'Description*')
 desc_entry.config(state=DISABLED)
 desc_entry.bind("<Button-1>", click_desc)
 desc_entry.grid(row=1, column=0, pady=10)
 
 price_entry = Entry(actions, justify=CENTER, border=4)
-price_entry.insert(0, 'Prix')
+price_entry.insert(0, 'Prix*')
 price_entry.config(state=DISABLED)
 price_entry.bind("<Button-1>", click_prix)
 price_entry.grid(row=2, column=0, pady=10)
 
 quantity_entry = Entry(actions, justify=CENTER, border=4)
-quantity_entry.insert(0, 'Quantité')
+quantity_entry.insert(0, 'Quantité*')
 quantity_entry.config(state=DISABLED)
 quantity_entry.bind("<Button-1>", click_quantite)
 quantity_entry.grid(row=3, column=0, pady=10)
 
 id_category_entry = Entry(actions, justify=CENTER, border=4)
-id_category_entry.insert(0, 'ID Categorie')
+id_category_entry.insert(0, 'ID Categorie*')
 id_category_entry.config(state=DISABLED)
 id_category_entry.bind("<Button-1>", click_id_category)
 id_category_entry.grid(row=4, column=0, pady=10)
@@ -150,41 +191,43 @@ id_category_entry.grid(row=4, column=0, pady=10)
 name_entry2 = Entry(actions, justify=CENTER, border=4)
 name_entry2.insert(0, 'Nom')
 name_entry2.config(state=DISABLED)
-name_entry2.bind("<Button-1>", click_name)
-name_entry2.grid(row=0, column=2)
+name_entry2.bind("<Button-1>", click_name2)
+name_entry2.grid(row=1, column=2)
 
 desc_entry2 = Entry(actions, justify=CENTER, border=4)
 desc_entry2.insert(0, 'Description')
 desc_entry2.config(state=DISABLED)
-desc_entry2.bind("<Button-1>", click_desc)
-desc_entry2.grid(row=1, column=2, pady=10)
+desc_entry2.bind("<Button-1>", click_desc2)
+desc_entry2.grid(row=2, column=2, pady=10)
 
 price_entry2 = Entry(actions, justify=CENTER, border=4)
 price_entry2.insert(0, 'Prix')
 price_entry2.config(state=DISABLED)
-price_entry2.bind("<Button-1>", click_prix)
-price_entry2.grid(row=2, column=2, pady=10)
+price_entry2.bind("<Button-1>", click_prix2)
+price_entry2.grid(row=3, column=2, pady=10)
 
 quantity_entry2 = Entry(actions, justify=CENTER, border=4)
 quantity_entry2.insert(0, 'Quantité')
 quantity_entry2.config(state=DISABLED)
-quantity_entry2.bind("<Button-1>", click_quantite)
-quantity_entry2.grid(row=3, column=2, pady=10)
+quantity_entry2.bind("<Button-1>", click_quantite2)
+quantity_entry2.grid(row=4, column=2, pady=10)
 
-id_category_entry = Entry(actions, justify=CENTER, border=4)
-id_category_entry.insert(0, 'ID Categorie')
-id_category_entry.config(state=DISABLED)
-id_category_entry.bind("<Button-1>", click_id_category)
-id_category_entry.grid(row=4, column=2, pady=10)
+id_category_entry2 = Entry(actions, justify=CENTER, border=4)
+id_category_entry2.insert(0, 'ID Categorie')
+id_category_entry2.config(state=DISABLED)
+id_category_entry2.bind("<Button-1>", click_id_category2)
+id_category_entry2.grid(row=5, column=2, pady=10)
 
+# Entry supprimer un produit
 delete = Entry(actions, justify=CENTER, border=4)
-delete.insert(0, 'ID du produit')
+delete.insert(0, 'ID du produit*')
 delete.config(state=DISABLED)
 delete.bind("<Button-1>", click_delete)
 delete.grid(row=0, column=1)
 
+# Entry ID du produit à modifier
 modif = Entry(actions, justify=CENTER, border=4)
-modif.insert(0, 'ID Categorie')
+modif.insert(0, 'ID du produit*')
 modif.config(state=DISABLED)
 modif.bind("<Button-1>", click_modif)
 modif.grid(row=0, column=2)
@@ -215,13 +258,28 @@ def func_modif_product():
 
 # Boutons et fonctions de la frame Actions
 add_product = Button(actions, text='Ajouter un produit', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_add_product)
-add_product.grid(row=6, column=0, padx=10, pady=10)
+add_product.grid(row=5, column=0, padx=10, pady=10)
 
 delete_product = Button(actions, text='Supprimer un produit', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_delete_product)
 delete_product.grid(row=1, column=1, padx=10, pady=10)
 
-modif_product = Button(actions, text='Modifier un produit', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
+modif_product = Button(actions, text='Tout modifier', padx=10, pady=10, bg='DarkOrange2', activebackground='DarkOrange2', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
+modif_product.grid(row=0, column=3, padx=10, pady=10)
+
+modif_product = Button(actions, text='Modifier le nom', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
 modif_product.grid(row=1, column=3, padx=10, pady=10)
+
+modif_product2 = Button(actions, text='Modifier la description', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
+modif_product2.grid(row=2, column=3, padx=10, pady=10)
+
+modif_product3 = Button(actions, text='Modifier le prix', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
+modif_product3.grid(row=3, column=3, padx=10, pady=10)
+
+modif_product4 = Button(actions, text='Modifier la quantité', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
+modif_product4.grid(row=4, column=3, padx=10, pady=10)
+
+modif_product5 = Button(actions, text="Modifier l'ID catégorie", padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
+modif_product5.grid(row=5, column=3, padx=10, pady=10)
 
 root.mainloop()
 
