@@ -14,8 +14,8 @@ cursor = bd.cursor()
 root = tk.Tk()
 
 # Centrer la fenêtre
-appwidth = 650
-appheight = 460
+appwidth = 1350
+appheight = 600
 screenwidth = root.winfo_screenwidth()
 screenheight = root.winfo_screenheight()
 x = (screenwidth / 2) - (appwidth / 2)
@@ -25,8 +25,9 @@ root.title("Gestion de stock")
 root.geometry(f'{appwidth}x{appheight}+{int(x)}+{int(y)}')
 
 def show_products():
-    appwidth = 750
-    appheight = 300
+    # Centrer la fenêtre
+    appwidth = 1000
+    appheight = 500
     screenwidth = root.winfo_screenwidth()
     screenheight = root.winfo_screenheight()
     x = (screenwidth / 2) - (appwidth / 2)
@@ -41,12 +42,7 @@ def show_products():
     bd_info = tk.LabelFrame(window, text="Base de données", fg='DarkOrange2', font=('Arial', 10, 'bold'))
     bd_info.pack(pady=50, padx=50, ipadx=10, ipady=10)
 
-    # Texte dans la frame BDD
-    # bd_info2 = tk.Label(bd_info, text="Titre")
-    # bd_info2.pack()
-
     # Frame Produits
-
     bd_info3 = tk.LabelFrame(bd_info, text="Produits", fg='dodger blue', font=('Arial', 10, 'bold'))
     bd_info3.pack()
 
@@ -94,13 +90,23 @@ def show_products():
             category_entry.insert(END, category[j])
         i += 1
 
-# Afficher les produits
-show_product = Button(root, text='Afficher les produits', padx=10, pady=10, bg='SpringGreen4', activebackground='SpringGreen4', activeforeground='black', font=('Tahoma', 8, 'bold'), command=show_products)
-show_product.pack(pady=10)
+frame = tk.Frame(root)
+frame.pack()
 
-# Actions
-actions = tk.LabelFrame(root, text='Actions', font=('Arial', 10, 'bold'))
-actions.pack()
+bd_info = tk.LabelFrame(root, text="Base de données", fg='DarkOrange2', font=('Arial', 10, 'bold'))
+bd_info.pack(pady=50, padx=50, ipadx=10, ipady=10)
+
+# Afficher les produits
+show_product = Button(bd_info, text='Afficher les produits et catégories', padx=10, pady=10, bg='SpringGreen4', activebackground='SpringGreen4', activeforeground='black', font=('Tahoma', 8, 'bold'), command=show_products)
+show_product.grid(row=0, column=0)
+
+# Actions produits
+actions = tk.LabelFrame(bd_info, text='Actions produits', fg='dodger blue', font=('Arial', 10, 'bold'))
+actions.grid(row=1, column=0)
+
+# Actions catégories
+actions_cat = tk.LabelFrame(bd_info, text='Actions catégories', fg='dodger blue', font=('Arial', 10, 'bold'))
+actions_cat.grid(row=1, column=1)
 
 # Clique sur les entry colonne1 (ajout produit)
 def click_name(event):
@@ -127,9 +133,9 @@ def click_delete(event):
     delete.config(state=NORMAL)
     delete.delete(0, END)
 
-def click_modif(event):
-    modif.config(state=NORMAL)
-    modif.delete(0, END)
+def click_edit(event):
+    edit.config(state=NORMAL)
+    edit.delete(0, END)
 
 # Clique sur les entry colonne3 (modif produit)
 def click_name2(event):
@@ -152,9 +158,9 @@ def click_id_category2(event):
     id_category_entry2.config(state=NORMAL)
     id_category_entry2.delete(0, END)
 
-def click_modif2(event):
-    modif.config(state=NORMAL)
-    modif.delete(0, END)
+def click_edit2(event):
+    edit.config(state=NORMAL)
+    edit.delete(0, END)
 
 # Entry Actions
 name_entry = Entry(actions, justify=CENTER, border=4)
@@ -226,11 +232,11 @@ delete.bind("<Button-1>", click_delete)
 delete.grid(row=0, column=1)
 
 # Entry ID du produit à modifier
-modif = Entry(actions, justify=CENTER, border=4)
-modif.insert(0, 'ID du produit*')
-modif.config(state=DISABLED)
-modif.bind("<Button-1>", click_modif)
-modif.grid(row=0, column=2)
+edit = Entry(actions, justify=CENTER, border=4)
+edit.insert(0, 'ID du produit*')
+edit.config(state=DISABLED)
+edit.bind("<Button-1>", click_edit)
+edit.grid(row=0, column=2)
 
 # Boutons et fonctions de la frame Actions
 def func_add_product():
@@ -244,17 +250,58 @@ def func_add_product():
     query = f"INSERT INTO produit (nom, description, prix, quantite, id_categorie) VALUES ('{name}', '{description}', '{prix}', '{quantite}', '{id_category}');"
     cursor.execute(query) # exécuter la requête
     bd.commit() # commit dans la BDD
-    print(name_entry.get(), desc_entry.get(), price_entry.get(), quantity_entry.get(), id_category_entry.get())
 
 def func_delete_product():
     product = delete.get() # product = entry supprimer
-    query = f"DELETE FROM produit where id = {product};" # supprimer dans la table produit ou l'id = product
+    query = f"DELETE FROM produit WHERE id = {product};" # supprimer dans la table produit ou l'id = product
     cursor.execute(query)
     bd.commit()
 
-def func_modif_product():
-    pass
-    # Get l'entry, get l'ID dans le tableau Produit, et modifier le produit par l'entry.
+def func_edit_product():
+    id = edit.get()
+    name = name_entry2.get()
+    desc = desc_entry2.get()
+    price = price_entry2.get()
+    quantity = quantity_entry2.get()
+    idcat = id_category_entry2.get()
+    query = f"UPDATE produit SET nom = '{name}', description = '{desc}', prix = {price}, quantite = {quantity}, id_categorie = {idcat} where id = {id};"
+    cursor.execute(query)
+    bd.commit()
+
+def edit_name():
+    id = edit.get()
+    name = name_entry2.get()
+    query = f"UPDATE produit SET nom = '{name}' WHERE id = '{id}';" # modifier le nom d'un produit
+    cursor.execute(query)
+    bd.commit()
+
+def edit_desc():
+    id = edit.get()
+    desc = desc_entry2.get()
+    query = f"UPDATE produit SET description = '{desc}' WHERE id = '{id}';" # modifier la description d'un produit
+    cursor.execute(query)
+    bd.commit()
+
+def edit_price():
+    id = edit.get()
+    price = price_entry2.get()
+    query = f"UPDATE produit SET prix = '{price}' WHERE id = '{id}';" # modifier le prix d'un produit
+    cursor.execute(query)
+    bd.commit()
+
+def edit_quantity():
+    id = edit.get()
+    quantity = quantity_entry2.get()
+    query = f"UPDATE produit SET quantite = '{quantity}' WHERE id = '{id}';" # modifier la quantité d'un produit
+    cursor.execute(query)
+    bd.commit()
+
+def edit_id_categorie():
+    id = edit.get()
+    idcat = id_category_entry2.get()
+    query = f"UPDATE produit SET id_categorie = '{idcat}' WHERE id = '{id}';" # modifier l'ID de la catégorie d'un produit
+    cursor.execute(query)
+    bd.commit()
 
 # Boutons et fonctions de la frame Actions
 add_product = Button(actions, text='Ajouter un produit', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_add_product)
@@ -263,65 +310,73 @@ add_product.grid(row=5, column=0, padx=10, pady=10)
 delete_product = Button(actions, text='Supprimer un produit', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_delete_product)
 delete_product.grid(row=1, column=1, padx=10, pady=10)
 
-modif_product = Button(actions, text='Tout modifier', padx=10, pady=10, bg='DarkOrange2', activebackground='DarkOrange2', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
-modif_product.grid(row=0, column=3, padx=10, pady=10)
+edit_product = Button(actions, text='Tout modifier', padx=10, pady=10, bg='DarkOrange2', activebackground='DarkOrange2', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_edit_product)
+edit_product.grid(row=0, column=3, padx=10, pady=10)
 
-modif_product = Button(actions, text='Modifier le nom', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
-modif_product.grid(row=1, column=3, padx=10, pady=10)
+edit_product = Button(actions, text='Modifier le nom', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=edit_name)
+edit_product.grid(row=1, column=3, padx=10, pady=10)
 
-modif_product2 = Button(actions, text='Modifier la description', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
-modif_product2.grid(row=2, column=3, padx=10, pady=10)
+edit_product2 = Button(actions, text='Modifier la description', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=edit_desc)
+edit_product2.grid(row=2, column=3, padx=10, pady=10)
 
-modif_product3 = Button(actions, text='Modifier le prix', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
-modif_product3.grid(row=3, column=3, padx=10, pady=10)
+edit_product3 = Button(actions, text='Modifier le prix', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=edit_price)
+edit_product3.grid(row=3, column=3, padx=10, pady=10)
 
-modif_product4 = Button(actions, text='Modifier la quantité', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
-modif_product4.grid(row=4, column=3, padx=10, pady=10)
+edit_product4 = Button(actions, text='Modifier la quantité', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=edit_quantity)
+edit_product4.grid(row=4, column=3, padx=10, pady=10)
 
-modif_product5 = Button(actions, text="Modifier l'ID catégorie", padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_modif_product)
-modif_product5.grid(row=5, column=3, padx=10, pady=10)
+edit_product5 = Button(actions, text="Modifier l'ID catégorie", padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=edit_id_categorie)
+edit_product5.grid(row=5, column=3, padx=10, pady=10)
+
+# Frame catégories
+def adding_categorie():
+    id = id_categorie.get()
+    nom = name_categorie.get()
+    # requête pour ajouter un nouveau produit dans la table produit
+    query = f"INSERT INTO categorie (id, nom) VALUES ('{id}', '{nom}');"
+    cursor.execute(query) # exécuter la requête
+    bd.commit() # commit dans la BDD
+
+def func_delete_categorie():
+    id = del_categorie.get()
+    query = f"DELETE FROM categorie WHERE id = {id};" # supprimer dans la table produit ou l'id = product
+    cursor.execute(query)
+    bd.commit()
+    
+add_categorie = Button(actions_cat, text='Ajouter une catégorie', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=adding_categorie)
+add_categorie.grid(row=5, column=0, padx=10, pady=10)
+
+delete_categorie = Button(actions_cat, text='Supprimer une catégorie', padx=10, pady=10, bg='RoyalBlue1', activebackground='RoyalBlue1', activeforeground='black', font=('Tahoma', 8, 'bold'), command=func_delete_categorie)
+delete_categorie.grid(row=1, column=1, padx=10, pady=10)
+
+def click_id_categorie(event):
+    id_categorie.config(state=NORMAL)
+    id_categorie.delete(0, END)
+
+def click_name_categorie(event):
+    name_categorie.config(state=NORMAL)
+    name_categorie.delete(0, END)
+
+def click_del_categorie(event):
+    del_categorie.config(state=NORMAL)
+    del_categorie.delete(0, END)
+
+id_categorie = Entry(actions_cat, justify=CENTER, border=4)
+id_categorie.insert(0, 'ID*')
+id_categorie.config(state=DISABLED)
+id_categorie.bind("<Button-1>", click_id_categorie)
+id_categorie.grid(row=0, column=0, pady=10)
+
+name_categorie = Entry(actions_cat, justify=CENTER, border=4)
+name_categorie.insert(0, 'Nom*')
+name_categorie.config(state=DISABLED)
+name_categorie.bind("<Button-1>", click_name_categorie)
+name_categorie.grid(row=1, column=0, pady=10)
+
+del_categorie = Entry(actions_cat, justify=CENTER, border=4)
+del_categorie.insert(0, 'ID*')
+del_categorie.config(state=DISABLED)
+del_categorie.bind("<Button-1>", click_del_categorie)
+del_categorie.grid(row=0, column=1, pady=10)
 
 root.mainloop()
-
-# Créer une base de données namemée “boutique” et les tables “produit” et “categorie”.
-query = "CREATE DATABASE boutique;"
-query2 = "USE boutique;"
-
-# Crée la table produit
-query3 = "CREATE TABLE produit (id INT primary key auto_increment, name VARCHAR(255), \
-    description text, prix int, quantite int, id_categorie int);"
-
-# Crée la table categorie
-query4 = "CREATE TABLE categorie (id INT primary key auto_increment, name VARCHAR(255));"
-
-# Insertion de produits dans la table produit
-query5 = "INSERT INTO produit (name, description, prix, quantite, id_categorie) VALUES ('Piano', 'Instrument de musique', 500, 1, 1), ('Ordinateur', 'Informatique', 1500, 3, 2);"
-
-# Insertion de categories dans la table categorie
-query6 = "INSERT INTO categorie (name) VALUES ('Instrument à clavier');"
-query7 = "INSERT INTO categorie (name) VALUES ('Informatique');"
-
-cursor.execute(query)
-
-bd.commit()
-
-cursor.close()
-
-# Insérer des produits dans la table “produits” et différentes catégories.
-
-# À l’aide de l’interface graphique de votre choix, créer un tableau de bord, permettant la
-# gestion des stocks.
-
-# Sur le tableau de bord, la liste complète des produits en stock sont affichés. L’utilisateur
-# doit avoir la possibilité d’ajouter un produit, de supprimer un produit et de modifier le
-# produit (stock, prix, ...).
-
-
-
-# Table produit:
-# +----+------------+-----------------------+------+----------+--------------+
-# | id | name        | description           | prix | quantite | id_categorie |
-# +----+------------+-----------------------+------+----------+--------------+
-# |  1 | Piano      | Instrument de musique |  500 |        1 |            1 |
-# |  2 | Ordinateur | Informatique          | 1500 |        3 |            2 |
-# +----+------------+-----------------------+------+----------+--------------+
